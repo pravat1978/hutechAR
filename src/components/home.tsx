@@ -7,6 +7,13 @@ import CashflowChart from "./dashboard/CashflowChart";
 import CollectionActivity from "./dashboard/CollectionActivity";
 import CreditAlerts from "./dashboard/CreditAlerts";
 import AccountsReceivableModule from "./accounts-receivable/AccountsReceivableModule";
+import CollectionsTracker from "./collections/CollectionsTracker";
+import CreditManagement from "./credit/CreditManagement";
+import AnalyticsDashboard from "./analytics/AnalyticsDashboard";
+import IntegrationHub from "./integrations/IntegrationHub";
+import TeamManagement from "./team/TeamManagement";
+import SettingsPage from "./settings/SettingsPage";
+import HelpSupport from "./help/HelpSupport";
 
 const Home = () => {
   const [activePath, setActivePath] = useState("/");
@@ -62,68 +69,19 @@ const Home = () => {
             <AccountsReceivableModule />
           )}
 
-          {activePath === "/collections" && (
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h1 className="text-2xl font-bold mb-6">Collections Tracker</h1>
-              <p className="text-gray-500">
-                Collections Tracker module content will be displayed here.
-              </p>
-            </div>
-          )}
+          {activePath === "/collections" && <CollectionsTracker />}
 
-          {activePath === "/credit" && (
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h1 className="text-2xl font-bold mb-6">Credit Management</h1>
-              <p className="text-gray-500">
-                Credit Management module content will be displayed here.
-              </p>
-            </div>
-          )}
+          {activePath === "/credit" && <CreditManagement />}
 
-          {activePath === "/analytics" && (
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h1 className="text-2xl font-bold mb-6">Analytics Dashboard</h1>
-              <p className="text-gray-500">
-                Analytics Dashboard module content will be displayed here.
-              </p>
-            </div>
-          )}
+          {activePath === "/analytics" && <AnalyticsDashboard />}
 
-          {activePath === "/integrations" && (
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h1 className="text-2xl font-bold mb-6">Integration Hub</h1>
-              <p className="text-gray-500">
-                Integration Hub module content will be displayed here.
-              </p>
-            </div>
-          )}
+          {activePath === "/integrations" && <IntegrationHub />}
 
-          {activePath === "/team" && (
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h1 className="text-2xl font-bold mb-6">Team Management</h1>
-              <p className="text-gray-500">
-                Team Management module content will be displayed here.
-              </p>
-            </div>
-          )}
+          {activePath === "/team" && <TeamManagement />}
 
-          {activePath === "/settings" && (
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h1 className="text-2xl font-bold mb-6">Settings</h1>
-              <p className="text-gray-500">
-                Settings module content will be displayed here.
-              </p>
-            </div>
-          )}
+          {activePath === "/settings" && <SettingsPage />}
 
-          {activePath === "/help" && (
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h1 className="text-2xl font-bold mb-6">Help & Support</h1>
-              <p className="text-gray-500">
-                Help & Support module content will be displayed here.
-              </p>
-            </div>
-          )}
+          {activePath === "/help" && <HelpSupport />}
         </main>
       </div>
 

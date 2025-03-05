@@ -1,16 +1,58 @@
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { AlertCircle, ArrowRight, Check, CreditCard, Database, ExternalLink, Filter, Globe, Key, Link as LinkIcon, Lock, Plus, RefreshCw, Search, Settings, Shield, Sliders, Wallet } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowRight,
+  Check,
+  CreditCard,
+  Database,
+  Eye,
+  ExternalLink,
+  Filter,
+  Globe,
+  Key,
+  Link as LinkIcon,
+  Lock,
+  Plus,
+  RefreshCw,
+  Search,
+  Settings,
+  Shield,
+  Sliders,
+  Users,
+  Wallet,
+} from "lucide-react";
 
 interface IntegrationHubProps {
   title?: string;
@@ -20,7 +62,9 @@ const IntegrationHub = ({ title = "Integration Hub" }: IntegrationHubProps) => {
   const [activeTab, setActiveTab] = useState("accounting");
   const [searchQuery, setSearchQuery] = useState("");
   const [showConfigDialog, setShowConfigDialog] = useState(false);
-  const [selectedIntegration, setSelectedIntegration] = useState<string | null>(null);
+  const [selectedIntegration, setSelectedIntegration] = useState<string | null>(
+    null,
+  );
 
   // Mock data for integrations
   const integrations = {
@@ -28,7 +72,8 @@ const IntegrationHub = ({ title = "Integration Hub" }: IntegrationHubProps) => {
       {
         id: "quickbooks",
         name: "QuickBooks Online",
-        description: "Sync invoices, payments, and customer data with QuickBooks Online",
+        description:
+          "Sync invoices, payments, and customer data with QuickBooks Online",
         status: "connected",
         lastSync: "2023-06-15 09:30 AM",
         icon: "/icons/quickbooks.png",
@@ -44,7 +89,8 @@ const IntegrationHub = ({ title = "Integration Hub" }: IntegrationHubProps) => {
       {
         id: "sage",
         name: "Sage Intacct",
-        description: "Enterprise-grade accounting integration with Sage Intacct",
+        description:
+          "Enterprise-grade accounting integration with Sage Intacct",
         status: "disconnected",
         lastSync: null,
         icon: "/icons/sage.png",
@@ -104,7 +150,8 @@ const IntegrationHub = ({ title = "Integration Hub" }: IntegrationHubProps) => {
       {
         id: "hubspot",
         name: "HubSpot",
-        description: "Connect your HubSpot CRM to manage customer relationships",
+        description:
+          "Connect your HubSpot CRM to manage customer relationships",
         status: "disconnected",
         lastSync: null,
         icon: "/icons/hubspot.png",
@@ -155,11 +202,7 @@ const IntegrationHub = ({ title = "Integration Hub" }: IntegrationHubProps) => {
           </Badge>
         );
       case "disconnected":
-        return (
-          <Badge variant="outline">
-            Disconnected
-          </Badge>
-        );
+        return <Badge variant="outline">Disconnected</Badge>;
       case "error":
         return (
           <Badge variant="destructive">
@@ -201,19 +244,25 @@ const IntegrationHub = ({ title = "Integration Hub" }: IntegrationHubProps) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Connected Integrations</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Connected Integrations
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">3</div>
               <div className="flex items-center mt-1">
-                <span className="text-xs text-muted-foreground">Out of 12 available integrations</span>
+                <span className="text-xs text-muted-foreground">
+                  Out of 12 available integrations
+                </span>
               </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Last Sync Status</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Last Sync Status
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold flex items-center">
@@ -221,14 +270,18 @@ const IntegrationHub = ({ title = "Integration Hub" }: IntegrationHubProps) => {
                 Successful
               </div>
               <div className="flex items-center mt-1">
-                <span className="text-xs text-muted-foreground">Last run: Today at 09:30 AM</span>
+                <span className="text-xs text-muted-foreground">
+                  Last run: Today at 09:30 AM
+                </span>
               </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Data Synced</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Data Synced
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">1,250 records</div>
@@ -290,13 +343,25 @@ const IntegrationHub = ({ title = "Integration Hub" }: IntegrationHubProps) => {
                     <CardFooter className="bg-gray-50 border-t flex justify-between">
                       {integration.status === "connected" ? (
                         <div className="flex space-x-2">
-                          <Button size="sm" variant="outline" className="flex items-center gap-1">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex items-center gap-1"
+                          >
                             <Settings className="h-3 w-3" /> Configure
                           </Button>
-                          <Button size="sm" variant="outline" className="flex items-center gap-1">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex items-center gap-1"
+                          >
                             <RefreshCw className="h-3 w-3" /> Sync Now
                           </Button>
-                          <Button size="sm" variant="outline" className="flex items-center gap-1 text-red-500 hover:text-red-600">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex items-center gap-1 text-red-500 hover:text-red-600"
+                          >
                             Disconnect
                           </Button>
                         </div>
@@ -304,7 +369,9 @@ const IntegrationHub = ({ title = "Integration Hub" }: IntegrationHubProps) => {
                         <Button
                           size="sm"
                           className="flex items-center gap-1"
-                          onClick={() => handleConnectIntegration(integration.id)}
+                          onClick={() =>
+                            handleConnectIntegration(integration.id)
+                          }
                         >
                           <LinkIcon className="h-3 w-3" /> Connect
                         </Button>
@@ -321,7 +388,9 @@ const IntegrationHub = ({ title = "Integration Hub" }: IntegrationHubProps) => {
         <Card>
           <CardHeader>
             <CardTitle>Recent Integration Activity</CardTitle>
-            <CardDescription>Latest sync events and status updates</CardDescription>
+            <CardDescription>
+              Latest sync events and status updates
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -332,9 +401,13 @@ const IntegrationHub = ({ title = "Integration Hub" }: IntegrationHubProps) => {
                 <div className="flex-1">
                   <div className="flex justify-between">
                     <p className="font-medium">QuickBooks Sync Completed</p>
-                    <span className="text-sm text-gray-500">Today, 09:30 AM</span>
+                    <span className="text-sm text-gray-500">
+                      Today, 09:30 AM
+                    </span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">Successfully synced 125 invoices and 42 payments</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Successfully synced 125 invoices and 42 payments
+                  </p>
                 </div>
               </div>
 
@@ -345,11 +418,124 @@ const IntegrationHub = ({ title = "Integration Hub" }: IntegrationHubProps) => {
                 <div className="flex-1">
                   <div className="flex justify-between">
                     <p className="font-medium">Stripe Data Refresh</p>
-                    <span className="text-sm text-gray-500">Today, 08:15 AM</span>
+                    <span className="text-sm text-gray-500">
+                      Today, 08:15 AM
+                    </span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">Updated payment status for 18 invoices</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Updated payment status for 18 invoices
+                  </p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50">
-                <div className="h
+                <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center text-red-600">
+                  <AlertCircle className="h-4 w-4" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between">
+                    <p className="font-medium">Salesforce Connection Error</p>
+                    <span className="text-sm text-gray-500">
+                      Yesterday, 16:45 PM
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Authentication token expired, please reconnect
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Connection Dialog */}
+      <Dialog open={showConfigDialog} onOpenChange={setShowConfigDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Connect Integration</DialogTitle>
+            <DialogDescription>
+              Configure connection settings for {selectedIntegration}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="apiKey">API Key</Label>
+              <div className="flex">
+                <Input
+                  id="apiKey"
+                  type="password"
+                  placeholder="Enter your API key"
+                  className="flex-1"
+                />
+                <Button variant="ghost" size="icon" className="ml-2">
+                  <Eye className="h-4 w-4" />
+                </Button>
+              </div>
+              <p className="text-xs text-gray-500">
+                You can find your API key in your account settings
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="apiSecret">API Secret</Label>
+              <Input
+                id="apiSecret"
+                type="password"
+                placeholder="Enter your API secret"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Data to Sync</Label>
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Switch id="syncInvoices" defaultChecked />
+                  <Label htmlFor="syncInvoices">Invoices</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch id="syncCustomers" defaultChecked />
+                  <Label htmlFor="syncCustomers">Customers</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch id="syncPayments" defaultChecked />
+                  <Label htmlFor="syncPayments">Payments</Label>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Sync Frequency</Label>
+              <Select defaultValue="hourly">
+                <SelectTrigger>
+                  <SelectValue placeholder="Select frequency" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="realtime">Real-time</SelectItem>
+                  <SelectItem value="hourly">Hourly</SelectItem>
+                  <SelectItem value="daily">Daily</SelectItem>
+                  <SelectItem value="weekly">Weekly</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowConfigDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button className="flex items-center gap-2">
+              <LinkIcon className="h-4 w-4" /> Connect
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+export default IntegrationHub;
