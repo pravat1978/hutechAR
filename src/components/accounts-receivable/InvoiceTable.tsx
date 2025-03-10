@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { MoreHorizontal, Eye, Edit, Send, Trash, Download } from "lucide-react";
+import supabase from "@/utils/supabaseClient";
 
 interface Invoice {
   id: string;
@@ -36,6 +37,7 @@ interface InvoiceTableProps {
   onDeleteInvoice?: (id: string) => void;
   onSendReminder?: (id: string) => void;
   onDownloadInvoice?: (id: string) => void;
+  sendDataToParent?: (id: number) => void;
 }
 
 const InvoiceTable = ({
@@ -91,8 +93,10 @@ const InvoiceTable = ({
   onDeleteInvoice = (id) => console.log(`Delete invoice ${id}`),
   onSendReminder = (id) => console.log(`Send reminder for invoice ${id}`),
   onDownloadInvoice = (id) => console.log(`Download invoice ${id}`),
+  sendDataToParent
 }: InvoiceTableProps) => {
   const [selectedInvoices, setSelectedInvoices] = useState<string[]>([]);
+  const [pagination, setPagination] = useState<number>(0);
 
   const toggleSelectAll = () => {
     if (selectedInvoices.length === invoices.length) {
@@ -111,7 +115,28 @@ const InvoiceTable = ({
       setSelectedInvoices([...selectedInvoices, id]);
     }
   };
+  
+  const handlePage=async(page:string)=>{
+    let number=pagination
+//     const pageSize = 10; // Number of records per page
+// let page2 = 0; // Starting page (page 0 is the first page)
 
+// // Fetch data with total count (exact count of rows)
+// const { data, error, count } = await supabase
+//   .from('invoices')
+//   .select('*', { count: 'exact' })
+//   .range(page2 * pageSize, (page2 + 1) * pageSize - 1);
+//   const totalPages = Math.ceil(count / pageSize);
+    console.log(number)
+    if(page==="Previous" && number>=1){
+        setPagination(number-1)
+    sendDataToParent(number-1)
+    }
+    if(page==="Next" && number>=0){
+        setPagination(number+1)
+    sendDataToParent(number+1)
+    }
+  }
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
       case "paid":
@@ -128,7 +153,7 @@ const InvoiceTable = ({
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: "USD",
+      currency: "INR",
     }).format(amount);
   };
 
@@ -175,7 +200,7 @@ const InvoiceTable = ({
           )}
         </div>
       </div>
-      <Table>
+      <Table style={{margin:'0.5rem',width:'98%'}}>
         <TableCaption>A list of your invoices</TableCaption>
         <TableHeader>
           <TableRow>
@@ -267,10 +292,10 @@ const InvoiceTable = ({
           Showing {invoices.length} invoices
         </div>
         <div className="flex space-x-2">
-          <Button size="sm" variant="outline" disabled>
+          <Button onClick={()=>handlePage("Previous")} size="sm" variant="outline">
             Previous
           </Button>
-          <Button size="sm" variant="outline" disabled>
+          <Button onClick={()=>handlePage("Next")} size="sm" variant="outline">
             Next
           </Button>
         </div>

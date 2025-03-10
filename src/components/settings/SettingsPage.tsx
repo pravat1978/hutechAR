@@ -36,6 +36,7 @@ import {
   Database,
   FileText,
 } from "lucide-react";
+import { Progress } from "@radix-ui/react-progress";
 
 interface SettingsPageProps {
   title?: string;
@@ -122,6 +123,7 @@ const SettingsPage = ({ title = "Settings" }: SettingsPageProps) => {
         </Card>
 
         <div className="space-y-6">
+                  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsContent value="account" className="m-0">
             <Card>
               <CardHeader>
@@ -969,6 +971,8 @@ const SettingsPage = ({ title = "Settings" }: SettingsPageProps) => {
               </CardFooter>
             </Card>
           </TabsContent>
+                  </Tabs>
+          
         </div>
       </div>
     </div>
