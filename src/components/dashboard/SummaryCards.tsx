@@ -89,8 +89,8 @@ interface SummaryCardsProps {
 }
 
 const SummaryCards = ({
-  totalOutstanding = "$125,430.00",
-  overdueAmount = "$42,500.00",
+  totalOutstanding = "₹125,430.00",
+  overdueAmount = "₹42,500.00",
   averageDSO = "32 days",
   creditUtilization = "68%",
   totalOutstandingTrend = {
