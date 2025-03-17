@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -17,6 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import supabase from "@/utils/supabaseClient";
 
 interface Invoice {
   id: string;
@@ -33,40 +34,6 @@ interface RecentInvoicesProps {
 }
 
 const RecentInvoices = ({
-  invoices = [
-    {
-      id: "1",
-      invoiceNumber: "INV-001",
-      customer: "Acme Corporation",
-      amount: 1250.0,
-      dueDate: "2023-05-31",
-      status: "paid",
-    },
-    {
-      id: "2",
-      invoiceNumber: "INV-002",
-      customer: "Globex Industries",
-      amount: 3750.5,
-      dueDate: "2023-06-09",
-      status: "pending",
-    },
-    {
-      id: "3",
-      invoiceNumber: "INV-003",
-      customer: "Stark Enterprises",
-      amount: 8500.0,
-      dueDate: "2023-05-15",
-      status: "overdue",
-    },
-    {
-      id: "4",
-      invoiceNumber: "INV-004",
-      customer: "Wayne Industries",
-      amount: 4200.75,
-      dueDate: "2023-06-19",
-      status: "pending",
-    },
-  ],
   onViewInvoice = (id) => console.log(`View invoice ${id}`),
 }: RecentInvoicesProps) => {
   const getStatusBadgeVariant = (status: string) => {
@@ -81,7 +48,7 @@ const RecentInvoices = ({
         return "outline";
     }
   };
-
+  const [invoices,setInvoices]=useState([])
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -97,13 +64,38 @@ const RecentInvoices = ({
     });
   };
 
+  useEffect(()=>{
+    const fetchData = async () => {
+      try {
+        const page=1
+        const pageSize=5
+        const { data, error } = await supabase
+        .from('invoices')
+        .select('*')
+        .order('created_at', { ascending: false })  
+        .limit(5);
+          if (error) {
+            console.log(error)
+          }else{
+            console.log(data)
+            setInvoices(data);
+          }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        // setLoading(false); // Uncomment if you're using a loading state
+      }
+    };
+  
+    fetchData();
+  },[])
   return (
     <Card className="w-full h-full bg-white">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-lg font-medium">Recent Invoices</CardTitle>
-        <Button variant="outline" size="sm" className="h-8">
+        {/* <Button variant="outline" size="sm" className="h-8">
           View All
-        </Button>
+        </Button> */}
       </CardHeader>
       <CardContent>
         <Table>

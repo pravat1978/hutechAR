@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Card,
@@ -35,6 +35,7 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
+import supabase from "@/utils/supabaseClient";
 
 interface InvoiceGeneratorProps {
   open?: boolean;
@@ -46,7 +47,7 @@ interface InvoiceItem {
   id: string;
   description: string;
   quantity: number;
-  unitPrice: number;
+  rate: number;
   amount: number;
 }
 
@@ -65,7 +66,6 @@ const defaultCustomers = [
 const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
   open = true,
   onClose = () => {},
-  onSave = () => {},
 }) => {
   const [activeStep, setActiveStep] = useState<string>("template");
   const [selectedTemplate, setSelectedTemplate] = useState<string>("1");
@@ -74,15 +74,17 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
       id: "1",
       description: "Consulting Services",
       quantity: 10,
-      unitPrice: 150,
+      rate: 150,
       amount: 1500,
     },
   ]);
   const [showPreview, setShowPreview] = useState<boolean>(false);
+  const [latestData, setLatestData] = useState<any>([])
+  const [currentInvoiceNumber, setCurrentInvoiceNumber] = useState<any>("")
 
   const form = useForm({
     defaultValues: {
-      invoiceNumber: "INV-001",
+      invoiceNumber: currentInvoiceNumber,
       issueDate: new Date().toISOString().split("T")[0],
       dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
         .toISOString()
@@ -101,7 +103,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
       id: Date.now().toString(),
       description: "",
       quantity: 1,
-      unitPrice: 0,
+      rate: 0,
       amount: 0,
     };
     setInvoiceItems([...invoiceItems, newItem]);
@@ -121,9 +123,9 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
         if (item.id === id) {
           const updatedItem = { ...item, [field]: value };
 
-          // Recalculate amount if quantity or unitPrice changes
-          if (field === "quantity" || field === "unitPrice") {
-            updatedItem.amount = updatedItem.quantity * updatedItem.unitPrice;
+          // Recalculate amount if quantity or rate changes
+          if (field === "quantity" || field === "rate") {
+            updatedItem.amount = updatedItem.quantity * updatedItem.rate;
           }
 
           return updatedItem;
@@ -149,14 +151,57 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
     else if (activeStep === "preview") setActiveStep("items");
   };
 
-  const handleSave = () => {
+  const handleSave = async() => {
     const invoiceData = {
       ...form.getValues(),
       template: selectedTemplate,
       items: invoiceItems,
       total: calculateTotal(),
     };
-    onSave(invoiceData);
+    console.log(invoiceData,"datadatadatadata")
+   
+    const { data, error } = await supabase
+    .from('invoices') 
+    .insert([
+      { id:(latestData?.id)+1,
+        invoiceNumber:currentInvoiceNumber,
+        customer:invoiceData?.customer,
+        amount:"123",
+        issueDate:invoiceData?.issueDate,
+        dueDate:invoiceData?.dueDate,
+        status:"pending",
+       },
+    ]);
+   
+  if (error ) {
+    console.error('Error inserting data:', error);
+  } else {
+    console.log('Record saved:', data);
+  }
+  const { data:data1, error:error1 } = await supabase
+  .from('invoiceDetails') 
+  .insert([
+    { id:(latestData?.id)+1,
+      notes:invoiceData?.notes,
+      paymentTerms:invoiceData?.terms,
+      name:invoiceData?.customer,
+      email:invoiceData?.notes,
+      address:invoiceData?.notes,
+      contactPerson:invoiceData?.notes,
+      issueDate:invoiceData?.issueDate,
+      status:"pending",
+      amount:invoiceData?.total,
+      dueDate:invoiceData?.dueDate,
+      items:invoiceData?.items,
+      activities:invoiceData?.notes,
+      invoiceNumber:currentInvoiceNumber,
+     },
+  ]);
+  if (error1) {
+    console.error('Error inserting data:', error1);
+  } else {
+    console.log('Record saved:', data1);
+  }
     onClose();
   };
 
@@ -167,7 +212,27 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
       form.setValue("customerEmail", customer.email);
     }
   };
+  useEffect(()=>{
+    const fetchLatestRecord = async () => {
+      const { data, error } = await supabase
+        .from('invoices') // Replace with your table name
+        .select('*') // Select all columns (you can choose specific columns if needed)
+        .order('created_at', { ascending: false }) // Order by created_at in descending order
+        .limit(1); // Limit to 1 record
 
+      if (error) {
+        console.error('Error fetching latest record:', error.message);
+      } else {
+        setLatestData(data[0]);
+        let latestNumber=parseInt(data[0]?.invoiceNumber.split('-')[1])
+        latestNumber+=1
+        let newString = "INV-0" + latestNumber.toString()
+        setCurrentInvoiceNumber(newString)
+      }
+      // setLoading(false);
+    };
+    fetchLatestRecord();
+  },[])
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl bg-white">
@@ -217,23 +282,16 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
                 <label className="text-sm font-medium">Invoice Number</label>
                 <Input
                   {...form.register("invoiceNumber")}
-                  placeholder="INV-001"
+                  placeholder={currentInvoiceNumber}
+                  disabled={true}
                 />
               </div>
               <div>
-                <label className="text-sm font-medium">Customer</label>
-                <Select onValueChange={handleCustomerSelect}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a customer" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {defaultCustomers.map((customer) => (
-                      <SelectItem key={customer.id} value={customer.id}>
-                        {customer.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <label className="text-sm font-medium">Customer Name</label>
+                <Input
+                  {...form.register("customer")}
+                  placeholder=""
+                />
               </div>
               <div>
                 <label className="text-sm font-medium">Issue Date</label>
@@ -318,11 +376,11 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
                           type="number"
                           min="0"
                           step="0.01"
-                          value={item.unitPrice}
+                          value={item.rate}
                           onChange={(e) =>
                             handleItemChange(
                               item.id,
-                              "unitPrice",
+                              "rate",
                               Number(e.target.value),
                             )
                           }
@@ -330,7 +388,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
                         />
                       </td>
                       <td className="p-2 text-right">
-                        ${item.amount.toFixed(2)}
+                        ₹{item.amount.toFixed(2)}
                       </td>
                       <td className="p-2">
                         <Button
@@ -363,7 +421,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
                       Total:
                     </td>
                     <td className="text-right p-2">
-                      ${calculateTotal().toFixed(2)}
+                      ₹{calculateTotal().toFixed(2)}
                     </td>
                     <td></td>
                   </tr>
@@ -379,7 +437,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
                 <div>
                   <h2 className="text-2xl font-bold">INVOICE</h2>
                   <p className="text-gray-500">
-                    #{form.getValues().invoiceNumber}
+                    #{currentInvoiceNumber}
                   </p>
                 </div>
                 <div className="text-right">
@@ -425,10 +483,10 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
                       <td className="p-2">{item.description}</td>
                       <td className="p-2 text-right">{item.quantity}</td>
                       <td className="p-2 text-right">
-                        ${item.unitPrice.toFixed(2)}
+                        ₹{item.rate.toFixed(2)}
                       </td>
                       <td className="p-2 text-right">
-                        ${item.amount.toFixed(2)}
+                        ₹{item.amount.toFixed(2)}
                       </td>
                     </tr>
                   ))}
@@ -439,7 +497,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
                       Total:
                     </td>
                     <td className="text-right p-2">
-                      ${calculateTotal().toFixed(2)}
+                      ₹{calculateTotal().toFixed(2)}
                     </td>
                   </tr>
                 </tfoot>

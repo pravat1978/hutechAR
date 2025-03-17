@@ -115,7 +115,7 @@ const CashflowChart = ({
               className={`flex items-center ${isPositive ? "text-green-600" : "text-red-600"}`}
             >
               <span className="font-bold">
-                ${Math.abs(netCashflow).toLocaleString()}
+                ₹{Math.abs(netCashflow).toLocaleString()}
               </span>
               {isPositive ? (
                 <TrendingUp className="ml-1 h-4 w-4" />

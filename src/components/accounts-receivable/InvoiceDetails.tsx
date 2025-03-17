@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -31,7 +31,9 @@ import {
   CheckCircle,
   AlertCircle,
   MailIcon,
+  IndianRupeeIcon,
 } from "lucide-react";
+import supabase from "@/utils/supabaseClient";
 
 interface InvoiceDetailsProps {
   isOpen?: boolean;
@@ -39,49 +41,36 @@ interface InvoiceDetailsProps {
   invoiceId?: string;
 }
 
+
+
+
 const InvoiceDetails = ({
   isOpen = true,
   onClose = () => {},
   invoiceId = "INV-2023-0042",
 }: InvoiceDetailsProps) => {
-  const [activeTab, setActiveTab] = useState("details");
 
-  // Mock invoice data
-  const invoice = {
+  const mockInvoice = {
     id: invoiceId,
-    customer: {
-      name: "Acme Corporation",
-      email: "billing@acmecorp.com",
-      address: "123 Business Ave, Suite 400, San Francisco, CA 94107",
-      contactPerson: "John Smith",
-    },
-    status: "pending", // pending, paid, overdue
-    amount: 2450.75,
-    issueDate: "2023-06-15",
-    dueDate: "2023-07-15",
+      name: "Loading",
+      email: "Loading",
+      address: "Loading",
+      contactPerson: "Loading",
+    status: "Loading", // pending, paid, overdue
+    amount: 0,
+    issueDate: "Loading",
+    dueDate: "Loading",
     items: [
       {
-        description: "Web Development Services",
-        quantity: 40,
-        rate: 50,
-        amount: 2000,
-      },
-      {
-        description: "Domain Registration (1 year)",
-        quantity: 1,
-        rate: 15.75,
-        amount: 15.75,
-      },
-      {
-        description: "Premium Support Package",
-        quantity: 1,
-        rate: 435,
-        amount: 435,
+        description: "WLoading",
+        quantity: 0,
+        rate: 0,
+        amount: 0,
       },
     ],
     notes:
-      "Payment due within 30 days. Please include invoice number with your payment.",
-    paymentTerms: "Net 30",
+      "Loading",
+    paymentTerms: "Loading",
     activities: [
       { date: "2023-06-15", action: "Invoice created", user: "Sarah Johnson" },
       {
@@ -97,7 +86,30 @@ const InvoiceDetails = ({
       { date: "2023-07-01", action: "Payment reminder sent", user: "System" },
     ],
   };
+  const [activeTab, setActiveTab] = useState("details");
+  const [invoice, setInvoice] = useState(mockInvoice);
 
+  // Mock invoice data
+ 
+  useEffect(()=>{
+    let invoiceId=`INV-0${invoice.id}`
+    console.log(invoiceId,"aaaaaaaaaaaaaaaaaaa")
+    const fetchLatestRecord = async () => {
+      const { data, error } = await supabase
+        .from('invoiceDetails') 
+        .select('*') 
+        .eq('invoiceNumber', `INV-0${invoice.id}`)
+
+      if (error) {
+        console.error('Error fetching latest record:', error.message);
+      } else {
+        console.log(data,"setLatestDatasetLatestData")
+        setInvoice(data[0]); // Get the latest record
+      }
+      // setLoading(false);
+    };
+    fetchLatestRecord();
+  },[])
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "paid":
@@ -146,15 +158,15 @@ const InvoiceDetails = ({
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <p className="font-medium">{invoice.customer.name}</p>
+                    <p className="font-medium">{invoice.name}</p>
                     <p className="text-sm text-gray-600">
-                      {invoice.customer.contactPerson}
+                      {invoice.contactPerson}
                     </p>
                     <p className="text-sm text-gray-600">
-                      {invoice.customer.email}
+                      {invoice.email}
                     </p>
                     <p className="text-sm text-gray-600">
-                      {invoice.customer.address}
+                      {invoice.address}
                     </p>
                   </div>
                 </CardContent>
@@ -191,8 +203,8 @@ const InvoiceDetails = ({
                     <div className="flex justify-between pt-2 border-t mt-2">
                       <span className="text-sm font-medium">Total Amount:</span>
                       <span className="text-lg font-bold flex items-center gap-1">
-                        <DollarSign className="h-4 w-4" />{" "}
-                        {invoice.amount.toFixed(2)}
+                        <IndianRupeeIcon className="h-4 w-4" />{" "}
+                        {Number(invoice.amount).toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -231,10 +243,10 @@ const InvoiceDetails = ({
                           <td className="py-2">{item.description}</td>
                           <td className="text-right py-2">{item.quantity}</td>
                           <td className="text-right py-2">
-                            ${item.rate.toFixed(2)}
+                            ₹{item.rate.toFixed(2)}
                           </td>
                           <td className="text-right py-2 font-medium">
-                            ${item.amount.toFixed(2)}
+                            ₹{item.amount.toFixed(2)}
                           </td>
                         </tr>
                       ))}
@@ -243,7 +255,7 @@ const InvoiceDetails = ({
                           Total:
                         </td>
                         <td className="text-right py-2 font-bold">
-                          ${invoice.amount.toFixed(2)}
+                          ₹{Number(invoice.amount).toFixed(2)}
                         </td>
                       </tr>
                     </tbody>
@@ -362,12 +374,12 @@ const InvoiceDetails = ({
                     <div className="space-y-2">
                       <Input
                         placeholder="Email address"
-                        defaultValue={invoice.customer.email}
+                        defaultValue={invoice.email}
                       />
                       <Textarea
                         placeholder="Add a custom message"
                         className="h-20"
-                        defaultValue={`Dear ${invoice.customer.contactPerson},\n\nThis is a friendly reminder about invoice ${invoice.id} for $${invoice.amount.toFixed(2)} due on ${invoice.dueDate}.`}
+                        defaultValue={`Dear ${invoice.contactPerson},\n\nThis is a friendly reminder about invoice ${invoice.id} for ₹${Number(invoice.amount).toFixed(2)} due on ${invoice.dueDate}.`}
                       />
                       <Button className="w-full flex items-center gap-1">
                         <MailIcon className="h-4 w-4" /> Send Reminder

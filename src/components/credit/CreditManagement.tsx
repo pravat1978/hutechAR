@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -50,6 +50,7 @@ import {
   User,
 } from "lucide-react";
 import CreditAlerts from "../dashboard/CreditAlerts";
+import supabase from "@/utils/supabaseClient";
 
 interface CreditManagementProps {
   title?: string;
@@ -62,9 +63,11 @@ const CreditManagement = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreditDialog, setShowCreditDialog] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
+  const [customers, setCustomersData] = useState<any>([]);
+  const [creditApplications, setCreditApplications] = useState<any>([]);
 
   // Mock data for customers
-  const customers = [
+  const customersMock = [
     {
       id: "1",
       name: "Acme Corporation",
@@ -128,7 +131,7 @@ const CreditManagement = ({
   ];
 
   // Mock data for credit applications
-  const creditApplications = [
+  const creditApplicationsMock = [
     {
       id: "1",
       customer: "Oscorp",
@@ -265,6 +268,39 @@ const CreditManagement = ({
       overdueInvoices.find((inv) => inv.id === invoiceId)?.customer || null,
     );
   };
+  useEffect(()=>{
+    const fetchData = async () => {
+      try {
+        const page=1
+        const pageSize=5
+        const { data, error } = await supabase
+        .from('credit') 
+        .select('*') 
+
+          if (error) {
+            console.log(error)
+          }else{
+            console.log(data)
+            setCustomersData(data);
+          }
+          const { data:data1, error:error1 } = await supabase
+        .from('creditApplications') 
+        .select('*') 
+          if (error) {
+            console.log(error)
+          }else{
+            console.log(data1)
+            setCreditApplications(data1)
+          }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        // setLoading(false); // Uncomment if you're using a loading state
+      }
+    };
+  
+    fetchData();
+  },[])
 
   return (
     <div className="w-full h-full bg-gray-50 p-6">

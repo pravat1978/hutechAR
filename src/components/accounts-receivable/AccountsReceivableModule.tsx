@@ -152,7 +152,7 @@ useEffect(() => {
       const statusArray=['all','pending','overdue','paid','draft']
       let finalData :any= {}; 
       for(const datas of statusArray){
-        let query = supabase.from('invoices').select('*', { count: 'exact' }).range(page * pageSize, (page + 1) * pageSize - 1);
+        let query = supabase.from('invoices').select('*', { count: 'exact' }).range(page * pageSize, (page + 1) * pageSize - 1).order('created_at', { ascending: false });
 
         if (!(datas==='all')) {
           query = query.eq('status', datas);
@@ -166,7 +166,6 @@ useEffect(() => {
         }
        
       }
-      console.log(finalData,"daatatatdaatatatdaatatat")
       // const finalData={
       //   all: data,
       //   pending: data,
@@ -184,10 +183,9 @@ useEffect(() => {
 
   fetchData();
 
-}, [pagination]); // Empty dependency array ensures this effect runs only once (on component mount)
+}, [pagination]); 
 
     
-  // Mock data for different invoice statuses
   
 
   return (
