@@ -204,7 +204,7 @@ const AnalyticsDashboard = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$257,000</div>
+            <div className="text-2xl font-bold">₹257,000</div>
             <div className="flex items-center mt-1">
               <span className="flex items-center text-xs text-red-500">
                 <ArrowUp className="h-3 w-3 mr-1" />
@@ -244,7 +244,7 @@ const AnalyticsDashboard = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$125,000</div>
+            <div className="text-2xl font-bold">₹125,000</div>
             <div className="flex items-center mt-1">
               <span className="flex items-center text-xs text-green-500">
                 <ArrowUp className="h-3 w-3 mr-1" />
@@ -441,7 +441,7 @@ const AnalyticsDashboard = ({
                         opacity={0.3}
                       />
                       <XAxis dataKey="name" />
-                      <YAxis tickFormatter={(value) => `$${value / 1000}k`} />
+                      <YAxis tickFormatter={(value) => `₹${value / 1000}k`} />
                       <RechartsTooltip
                         formatter={(value) => [
                           formatCurrency(value as number),
@@ -511,7 +511,7 @@ const AnalyticsDashboard = ({
                         <TableCell className="text-red-600 font-semibold">
                           85 days
                         </TableCell>
-                        <TableCell>$8,500</TableCell>
+                        <TableCell>₹8,500</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">LexCorp</TableCell>
@@ -519,7 +519,7 @@ const AnalyticsDashboard = ({
                         <TableCell className="text-red-600 font-semibold">
                           80 days
                         </TableCell>
-                        <TableCell>$12,350</TableCell>
+                        <TableCell>₹12,350</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">Oscorp</TableCell>
@@ -527,7 +527,7 @@ const AnalyticsDashboard = ({
                         <TableCell className="text-amber-600 font-semibold">
                           59 days
                         </TableCell>
-                        <TableCell>$1,875</TableCell>
+                        <TableCell>₹1,875</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">
@@ -537,7 +537,7 @@ const AnalyticsDashboard = ({
                         <TableCell className="text-amber-600 font-semibold">
                           48 days
                         </TableCell>
-                        <TableCell>$15,200</TableCell>
+                        <TableCell>₹15,200</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell className="font-medium">
@@ -547,7 +547,7 @@ const AnalyticsDashboard = ({
                         <TableCell className="text-yellow-600">
                           35 days
                         </TableCell>
-                        <TableCell>$5,750</TableCell>
+                        <TableCell>₹5,750</TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>

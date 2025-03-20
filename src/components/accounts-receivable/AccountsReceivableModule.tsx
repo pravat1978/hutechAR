@@ -193,14 +193,14 @@ useEffect(() => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">{title}</h1>
         <div className="flex space-x-3">
-          <Button
+          {/* <Button
             variant="outline"
             className="flex items-center gap-2"
             onClick={() => setShowFilters(!showFilters)}
           >
             <Filter className="h-4 w-4" />
             {showFilters ? "Hide Filters" : "Show Filters"}
-          </Button>
+          </Button> */}
           <Button variant="outline" className="flex items-center gap-2">
             <Download className="h-4 w-4" />
             Export

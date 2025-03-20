@@ -90,8 +90,9 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
         .toISOString()
         .split("T")[0],
       customer: "",
-      customerEmail: "",
-      customerAddress: "",
+      contactPerson: "",
+      email: "",
+      address: "",
       notes: "",
       terms:
         "Payment due within 30 days. Late payments subject to a 1.5% monthly fee.",
@@ -166,7 +167,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
       { id:(latestData?.id)+1,
         invoiceNumber:currentInvoiceNumber,
         customer:invoiceData?.customer,
-        amount:"123",
+        amount:invoiceData?.total,
         issueDate:invoiceData?.issueDate,
         dueDate:invoiceData?.dueDate,
         status:"pending",
@@ -178,6 +179,28 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
   } else {
     console.log('Record saved:', data);
   }
+  const dummyActivities=[
+    {
+      "date": "2023-06-15",
+      "user": "Sarah Johnson",
+      "action": "Invoice created"
+    },
+    {
+      "date": "2023-06-15",
+      "user": "Sarah Johnson",
+      "action": "Invoice sent to customer"
+    },
+    {
+      "date": "2023-06-20",
+      "user": "System",
+      "action": "Invoice viewed by customer"
+    },
+    {
+      "date": "2023-07-01",
+      "user": "System",
+      "action": "Payment reminder sent"
+    }
+  ]
   const { data:data1, error:error1 } = await supabase
   .from('invoiceDetails') 
   .insert([
@@ -185,15 +208,15 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
       notes:invoiceData?.notes,
       paymentTerms:invoiceData?.terms,
       name:invoiceData?.customer,
-      email:invoiceData?.notes,
-      address:invoiceData?.notes,
-      contactPerson:invoiceData?.notes,
+      email:invoiceData?.email,
+      address:invoiceData?.address,
+      contactPerson:invoiceData?.contactPerson,
       issueDate:invoiceData?.issueDate,
       status:"pending",
       amount:invoiceData?.total,
       dueDate:invoiceData?.dueDate,
       items:invoiceData?.items,
-      activities:invoiceData?.notes,
+      activities: dummyActivities,
       invoiceNumber:currentInvoiceNumber,
      },
   ]);
@@ -205,13 +228,6 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
     onClose();
   };
 
-  const handleCustomerSelect = (customerId: string) => {
-    const customer = defaultCustomers.find((c) => c.id === customerId);
-    if (customer) {
-      form.setValue("customer", customer.name);
-      form.setValue("customerEmail", customer.email);
-    }
-  };
   useEffect(()=>{
     const fetchLatestRecord = async () => {
       const { data, error } = await supabase
@@ -248,12 +264,12 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
           onValueChange={setActiveStep}
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-4">
+          {/* <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="template">Template</TabsTrigger>
             <TabsTrigger value="details">Details</TabsTrigger>
             <TabsTrigger value="items">Line Items</TabsTrigger>
             <TabsTrigger value="preview">Preview</TabsTrigger>
-          </TabsList>
+          </TabsList> */}
 
           {/* Step 1: Template Selection */}
           <TabsContent value="template" className="space-y-4">
@@ -294,6 +310,20 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
                 />
               </div>
               <div>
+                <label className="text-sm font-medium">Email</label>
+                <Input
+                  {...form.register("email")}
+                  placeholder=""
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Contact Person</label>
+                <Input
+                  {...form.register("contactPerson")}
+                  placeholder=""
+                />
+              </div>
+              <div>
                 <label className="text-sm font-medium">Issue Date</label>
                 <Input type="date" {...form.register("issueDate")} />
               </div>
@@ -304,7 +334,7 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
               <div className="col-span-2">
                 <label className="text-sm font-medium">Customer Address</label>
                 <Textarea
-                  {...form.register("customerAddress")}
+                  {...form.register("address")}
                   placeholder="Enter customer's billing address"
                 />
               </div>
@@ -453,17 +483,17 @@ const InvoiceGenerator: React.FC<InvoiceGeneratorProps> = ({
               <div className="flex justify-between mb-8">
                 <div>
                   <h3 className="font-semibold mb-2">From:</h3>
-                  <p>Your Company Name</p>
-                  <p>123 Business Street</p>
-                  <p>City, State ZIP</p>
-                  <p>contact@yourcompany.com</p>
+                  <p>Hutech Solutions</p>
+                  <p>123 Hsr Layout</p>
+                  <p>Bangalore, 560102</p>
+                  <p>hutechsolutions@gmail.com</p>
                 </div>
                 <div className="text-right">
                   <h3 className="font-semibold mb-2">To:</h3>
                   <p>{form.getValues().customer}</p>
-                  <p>{form.getValues().customerEmail}</p>
+                  <p>{form.getValues().email}</p>
                   <p className="whitespace-pre-line">
-                    {form.getValues().customerAddress}
+                    {form.getValues().address}
                   </p>
                 </div>
               </div>
