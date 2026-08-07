@@ -14,6 +14,7 @@ import IntegrationHub from "./integrations/IntegrationHub";
 import TeamManagement from "./team/TeamManagement";
 import SettingsPage from "./settings/SettingsPage";
 import HelpSupport from "./help/HelpSupport";
+import DocumentsPage from "./documents/DocumentsPage";
 
 const Home = () => {
   const [activePath, setActivePath] = useState("/");
@@ -80,6 +81,8 @@ const Home = () => {
           {activePath === "/team" && <TeamManagement />}
 
           {activePath === "/settings" && <SettingsPage />}
+
+          {activePath === "/documents" && <DocumentsPage />}
 
           {activePath === "/help" && <HelpSupport />}
         </main>
