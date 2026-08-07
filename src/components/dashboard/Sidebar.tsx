@@ -19,6 +19,7 @@ import {
   LogOut,
   Users,
   Link,
+  FileSignature,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -57,6 +58,11 @@ const Sidebar = ({
       title: "Analytics",
       icon: <BarChart3 className="h-5 w-5" />,
       path: "/analytics",
+    },
+    {
+      title: "Document Creator",
+      icon: <FileSignature className="h-5 w-5" />,
+      path: "/documents",
     },
     {
       title: "Integration Hub",
